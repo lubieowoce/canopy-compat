@@ -10,7 +10,19 @@ with the addition of dependency ranges
 
 Canopy `0.3.0`, the last version published on `npm`, needs an old (pre 1.0.0) version of `mkdirp`,
 but it doesn't specify a version range, which makes installing it a pain.
-I made this repo so that i can just
+
+# Installation
+
 ```
-npm install -g git+https://github.com/lubieowoce/canopy-compat.git
+npm install -g lubieowoce/canopy-compat
+```
+Unfortunately, I've had issues with `npm 7.19.1` randomly skipping files when installing from github.
+If installing or running `canopy` gives you errors like this:
+```
+Error: Cannot find module '../lib/canopy'
+Error: Cannot find module '<...>/canopy/bin/canopy'
+```
+then try this method instead:
+```
+npm install -g 'https://github.com/lubieowoce/canopy-compat/archive/refs/tags/0.3.0.tar.gz'
 ```
