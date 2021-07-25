@@ -8,8 +8,8 @@
 , "version"         : "0.3.0"
 , "engines"         : {"node": ">=0.4.0"}
 , "files"           : ["bin", "lib"]
-, "main"            : "./lib/canopy.js"
-, "bin"             : {"canopy": "./bin/canopy"}
+, "main"            : "lib/canopy.js"
+, "bin"             : {"canopy": "bin/canopy"}
 , "preferGlobal"    : true
 , "dependencies"    : {"mkdirp": "^0.5.0", "nopt": "^5.0.0"}
 , "devDependencies" : {"benchmark": "", "jstest": "", "pegjs": "", "wake": ""}
