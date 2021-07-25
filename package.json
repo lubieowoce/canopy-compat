@@ -10,7 +10,7 @@
 , "main"            : "./lib/canopy.js"
 , "bin"             : {"canopy": "./bin/canopy"}
 , "preferGlobal"    : true
-, "dependencies"    : {"mkdirp": "", "nopt": ""}
+, "dependencies"    : {"mkdirp": "^0.5.0", "nopt": "^5.0.0"}
 , "devDependencies" : {"benchmark": "", "jstest": "", "pegjs": "", "wake": ""}
 
 , "scripts"         : { "build"   : "wake"
