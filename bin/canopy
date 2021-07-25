@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+var Canopy = require('../lib/canopy'),
+    fs     = require('fs'),
+    path   = require('path'),
+    mkdirp = require('mkdirp'),
+    nopt   = require('nopt');
+
+var BUILDERS = {};
+BUILDERS.java = Canopy.Builders.Java;
+BUILDERS.js = BUILDERS.javascript = Canopy.Builders.JavaScript;
+BUILDERS.py = BUILDERS.python = Canopy.Builders.Python;
+BUILDERS.rb = BUILDERS.ruby = Canopy.Builders.Ruby;
+
+try {
+  var options   = nopt({lang: String}, {l: '--lang'}),
+      lang      = options.lang || 'js',
+      inputFile = options.argv.remain[0];
+
+  if (!BUILDERS.hasOwnProperty(lang))
+    throw new Error('Unrecognised target language: ' + lang);
+
+  var grammar = fs.readFileSync(inputFile, 'utf8'),
+      builder = BUILDERS[lang].create(inputFile, path.sep),
+      parser  = Canopy.compile(grammar, builder),
+      names   = Object.keys(parser);
+
+  var write = function(index) {
+    var name = names[index];
+    if (!name) return;
+
+    mkdirp(path.dirname(name), function(error) {
+      fs.writeFileSync(name, parser[name]);
+      write(index + 1);
+    });
+  };
+  write(0);
+
+} catch (e) {
+  console.error(e.message);
+  console.error(e.stack);
+  process.exit(1);
+}

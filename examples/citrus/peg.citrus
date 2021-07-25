@@ -1,0 +1,117 @@
+grammar CitrusPEG
+  rule grammar
+    space* grammar_name rules:(space* grammar_rule)+ space*
+  end
+
+  rule grammar_name
+    `grammar` ":"? space+ object_identifier
+  end
+
+  rule grammar_rule
+    identifier assignment parsing_expression
+  end
+
+  rule assignment
+    space+ "<-" space+
+  end
+
+  rule parsing_expression
+    choice_expression | choice_part
+  end
+
+  rule parenthesised_expression
+    "(" space* parsing_expression space* ")"
+  end
+
+  rule choice_expression
+    first_part:choice_part rest:(space+ "/" space+ expression:choice_part)+
+  end
+
+  rule choice_part
+    (action_expression | sequence_expression | sequence_part) (space+ type_tag)?
+  end
+
+  rule action_expression
+    actionable_expression space+ action_tag
+  end
+
+  rule actionable_expression
+    "(" space* actionable_expression space* ")" | sequence_expression | repeated_atom | terminal_node
+  end
+
+  rule action_tag
+    "%" identifier
+  end
+
+  rule type_tag
+    "<" object_identifier ">"
+  end
+
+  rule sequence_expression
+    first_part:sequence_part rest:(space+ expression:sequence_part)+
+  end
+
+  rule sequence_part
+    label? expression:(maybe_atom | repeated_atom | atom)
+  end
+
+  rule maybe_atom
+    atom "?"
+  end
+
+  rule repeated_atom
+    atom quantifier:("*" | "+")
+  end
+
+  rule atom
+    parenthesised_expression | predicated_atom | reference_expression | terminal_node
+  end
+
+  rule terminal_node
+    string_expression | ci_string_expression | char_class_expression | any_char_expression
+  end
+
+  rule predicated_atom
+    predicate:("&" | "!") atom
+  end
+
+  rule reference_expression
+    identifier !assignment
+  end
+
+  rule string_expression
+    '"' ("\\" . | [^"])* '"' | "'" ("\\" . | [^'])* "'"
+  end
+
+  rule ci_string_expression
+    "`" ("\\" . | [^`])* "`"
+  end
+
+  rule any_char_expression
+    "."
+  end
+
+  rule char_class_expression
+    "[" "^"? ("\\" . | [^\]])+ "]"
+  end
+
+  rule label
+    identifier ":"
+  end
+
+  rule object_identifier
+    identifier ("." identifier)*
+  end
+
+  rule identifier
+    [a-zA-Z_] [a-zA-Z0-9_]*
+  end
+
+  rule space
+    [\s] | comment
+  end
+
+  rule comment
+    "#" [^\n]*
+  end
+end
